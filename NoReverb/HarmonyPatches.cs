@@ -32,9 +32,10 @@ namespace NoReverb
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.GetMixerFromPreset))]
         public static void GetMixerFromPreset(object[] __args)
         {
+            Logger.LogInfo($"Requested environment mixer for: {((AudioReverbPreset)__args[0]).ToString()}");
             if (Configuration.DisableOtherReverb)
             {
-                Logger.LogDebug("Forcing environment reverb to AudioReverbPreset.Off");
+                Logger.LogInfo("Forcing environment reverb to AudioReverbPreset.Off");
                 __args[0] = AudioReverbPreset.Off;
             }
         }
@@ -44,9 +45,10 @@ namespace NoReverb
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.GetGunshotMixerFromPreset))]
         public static void GetGunshotMixerFromPreset_NoReverb(object[] __args)
         {
+            Logger.LogInfo($"Requested gunshot mixer for: {((AudioReverbPreset)__args[0]).ToString()}");
             if (Configuration.DisableGunshotReverb)
             {
-                Logger.LogDebug("Forcing gunshot reverb to AudioReverbPreset.Off");
+                Logger.LogInfo("Forcing gunshot reverb to AudioReverbPreset.Off");
                 __args[0] = AudioReverbPreset.Off;
             }
         }

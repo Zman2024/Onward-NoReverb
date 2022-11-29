@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +14,11 @@ namespace NoReverb
     {
         private static ConfigFile _config = null;
 
-        public static bool DisableAreaReverb { get; private set; } = true;
+        public static bool DisableAreaReverb = true;
 
-        public static bool DisableGunshotReverb { get; private set; } = true;
+        public static bool DisableGunshotReverb = true;
 
-        public static bool DisableOtherReverb { get; private set; } = true;
+        public static bool DisableOtherReverb = true;
 
         // Config definitions //
         private static readonly string ConfigSection = "NoReverb";
@@ -28,27 +29,14 @@ namespace NoReverb
         public static void LoadConfig(ConfigFile cfg)
         {
             _config = cfg;
-            if (_config.Count == 0)
-            {
-                CreateConfig(cfg);
-                return;
-            }
-
-            ConfigReloaded(null, null);
-            _config.ConfigReloaded += ConfigReloaded;
-        }
-
-        private static void ConfigReloaded(object sender, EventArgs e)
-        {
-            // Yeah i know but i dont want a logger reference in here so i'll just use the HarmonyPatches one
-            HarmonyPatches.Logger.LogInfo("Config reloaded");
+            CreateConfigBindings(cfg);
 
             DisableAreaReverb = (bool)_config[areaReverb].BoxedValue;
             DisableGunshotReverb = (bool)_config[gunshotReverb].BoxedValue;
             DisableOtherReverb = (bool)_config[otherReverb].BoxedValue;
         }
 
-        public static void CreateConfig(ConfigFile cfg)
+        public static void CreateConfigBindings(ConfigFile cfg)
         {
             cfg.Bind(areaReverb, true, new ConfigDescription("Disables the AreaReverb script from running, stopping reverb in areas that it was explicitly added in"));
             cfg.Bind(gunshotReverb, true, new ConfigDescription("Disables reverb on gunshots"));
@@ -57,7 +45,7 @@ namespace NoReverb
 
     }
 
-    [BepInPlugin("Zman2024-NoReverb", "No Reverb", "0.1.0.0")]
+    [BepInPlugin("Zman2024-NoReverb", "No Reverb", "0.1.1")]
     public class Plugin : BaseUnityPlugin
     {
         public void Start()
