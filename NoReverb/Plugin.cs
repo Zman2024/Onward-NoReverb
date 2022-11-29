@@ -40,6 +40,9 @@ namespace NoReverb
 
         private static void ConfigReloaded(object sender, EventArgs e)
         {
+            // Yeah i know but i dont want a logger reference in here so i'll just use the HarmonyPatches one
+            HarmonyPatches.Logger.LogInfo("Config reloaded");
+
             DisableAreaReverb = (bool)_config[areaReverb].BoxedValue;
             DisableGunshotReverb = (bool)_config[gunshotReverb].BoxedValue;
             DisableOtherReverb = (bool)_config[otherReverb].BoxedValue;
