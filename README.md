@@ -1,25 +1,29 @@
-# Onward-NoReverb
-A BepInEx plugin to remove reverb in Onward 1.7.7
+# Onward No Reverb
+A BepInEx plugin that allows you to modify (or remove) reverb from various sources in Onward 1.7.7
 
-<h2> What does this do? </h2>
-This mod allows you to remove reverb from various sources
+## How to install
 
-<h2> How to install </h2>
+1. [Install BepInEx](https://github.com/BepInEx/BepInEx/wiki/Installation) to Onward
 
-1. Install BepInEx to Onward (https://github.com/BepInEx/BepInEx/wiki/Installation)
-
-2. Either download a release (https://github.com/Zman2024/Onward-NoReverb/releases) or build from source
+2. Either [download a release](https://github.com/Zman2024/Onward-NoReverb/releases) or build from source
 
 3. Put `NoReverb.dll` into `Onward/BepInEx/plugins`
 
-<h2>Config stuff</h2>
+## Configuration
 
 Config is located at `Onward/BepInEx/config/Zman2024-NoReverb.cfg`
 
-There are 3 different settings:
+### AudioReverbPreset overrides
+The following settings will override the `AudioReverbPreset` that is used by the specified audio mixer:
 
-1. `DisableAreaReverb` disables the area reverb script which defines reverb in areas that are different from the map's reverb (like a tunnel / small room)
+* `AreaReverbPreset` is for the AreaReverb scripts, it changes the reverb in a specified area
+* `GunshotReverbPreset` is the reverb preset used for all gunshot sounds
+* `GlobalReverbPreset` is the reverb for everything else
 
-2. `DisableGunshotReverb` disables the reverb for gunshots
+These seetings change if overrides are enabled / disabled:
 
-3. `DisableOtherReverb` disables the reverb for everything that isn't a gunshot
+* `DisableAreaReverb` completely disables all AreaReverb scripts
+* `EnableAreaReverbOverride` enables the `AreaReverbPreset` override (does nothing if `DisableAreaReverb` is `true`)
+* `EnableGunshotOverride` enables the `GunshotReverbPreset` override
+* `EnableGlobalOverride` enables the `GlobalReverbPreset` override
+
