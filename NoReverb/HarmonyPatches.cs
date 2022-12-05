@@ -18,11 +18,16 @@ namespace NoReverb
         [HarmonyPatch(typeof(AreaReverb), "Start")]
         public static bool AreaReverb_Start(AreaReverb __instance)
         {
-            if (Configuration.DisableAreaReverb)
+            if (Configuration.DisableAreaReverb.Value)
             {
                 Logger.LogDebug("Disabling AreaReverb instance");
                 __instance.enabled = false;
                 return false;
+            }
+            if (Configuration.EnableAreaReverbOverride.Value)
+            {
+                Logger.LogDebug($"Replacing AreaReverb's preset: {__instance.AreaPreset} with {Configuration.AreaReverbPreset.Value}");
+                __instance.AreaPreset = Configuration.AreaReverbPreset.Value;
             }
             return true;
         }
@@ -32,11 +37,11 @@ namespace NoReverb
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.GetMixerFromPreset))]
         public static void GetMixerFromPreset(object[] __args)
         {
-            Logger.LogInfo($"Requested environment mixer for: {((AudioReverbPreset)__args[0]).ToString()}");
-            if (Configuration.DisableOtherReverb)
+            AudioReverbPreset preset = ((AudioReverbPreset)__args[0]);
+            if (Configuration.EnableMiscOverride.Value)
             {
-                Logger.LogInfo("Forcing environment reverb to AudioReverbPreset.Off");
-                __args[0] = AudioReverbPreset.Off;
+                Logger.LogDebug($"Forcing environment reverb to {Configuration.OtherReverbPreset.Value} instead of {preset}");
+                __args[0] = Configuration.OtherReverbPreset.Value;
             }
         }
 
@@ -45,11 +50,11 @@ namespace NoReverb
         [HarmonyPatch(typeof(AudioManager), nameof(AudioManager.GetGunshotMixerFromPreset))]
         public static void GetGunshotMixerFromPreset_NoReverb(object[] __args)
         {
-            Logger.LogInfo($"Requested gunshot mixer for: {((AudioReverbPreset)__args[0]).ToString()}");
-            if (Configuration.DisableGunshotReverb)
+            AudioReverbPreset preset = ((AudioReverbPreset)__args[0]);
+            if (Configuration.EnableGunshotOverride.Value)
             {
-                Logger.LogInfo("Forcing gunshot reverb to AudioReverbPreset.Off");
-                __args[0] = AudioReverbPreset.Off;
+                Logger.LogDebug($"Forcing gunshot reverb to {Configuration.GunshotReverbPreset.Value} instead of {preset}");
+                __args[0] = Configuration.GunshotReverbPreset.Value;
             }
         }
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using BepInEx;
 using BepInEx.Configuration;
+using UnityEngine;
 
 namespace NoReverb
 {
@@ -14,38 +15,66 @@ namespace NoReverb
     {
         private static ConfigFile _config = null;
 
-        public static bool DisableAreaReverb = true;
+        public static ConfigEntry<bool> EnableAreaReverbOverride;
+        public static ConfigEntry<bool> DisableAreaReverb;
+        public static ConfigEntry<bool> EnableGunshotOverride;
+        public static ConfigEntry<bool> EnableMiscOverride;
 
-        public static bool DisableGunshotReverb = true;
-
-        public static bool DisableOtherReverb = true;
+        public static ConfigEntry<AudioReverbPreset> AreaReverbPreset;
+        public static ConfigEntry<AudioReverbPreset> GunshotReverbPreset;
+        public static ConfigEntry<AudioReverbPreset> OtherReverbPreset;
 
         // Config definitions //
-        private static readonly string ConfigSection = "NoReverb";
-        private static readonly ConfigDefinition areaReverb = new ConfigDefinition(ConfigSection, "DisableAreaReverb");
-        private static readonly ConfigDefinition gunshotReverb = new ConfigDefinition(ConfigSection, "DisableGunshotReverb");
-        private static readonly ConfigDefinition otherReverb = new ConfigDefinition(ConfigSection, "DisableOtherReverb");
+        private static class Definitions
+        {
+            public static readonly string ConfigSection = "NoReverb";
+
+            public static readonly ConfigDefinition EnableAreaReverbOverride = new ConfigDefinition(ConfigSection, "EnableAreaReverbOverride");
+            public static readonly ConfigDescription EnableAreaReverbOverrideDesc = new ConfigDescription("Enables or disables the AreaReverbPreset override");
+
+            public static readonly ConfigDefinition DisableAreaReverb = new ConfigDefinition(ConfigSection, "DisableAreaReverb");
+            public static readonly ConfigDescription DisableAreaReverbDesc = new ConfigDescription("Disables the entire AreaReverb script from running");
+
+            public static readonly ConfigDefinition EnableGunshotOverride = new ConfigDefinition(ConfigSection, "EnableGunshotOverride");
+            public static readonly ConfigDescription EnableGunshotOverrideDesc = new ConfigDescription("Enables or disables the GunshotReverbPreset override");
+
+            public static readonly ConfigDefinition EnableMiscOverride = new ConfigDefinition(ConfigSection, "EnableMiscOverride");
+            public static readonly ConfigDescription EnableMiscOverrideDesc = new ConfigDescription("Enables or disables the OtherReverbPreset override");
+
+
+            public static readonly ConfigDefinition AreaReverbPreset = new ConfigDefinition(ConfigSection, "AreaReverbPreset");
+            public static readonly ConfigDescription AreaReverbPresetDesc = new ConfigDescription("The AudioReverbPreset to use for all AreaReverb scripts, AreaReverb is for reverb in areas that it was explicitly added in");
+
+            public static readonly ConfigDefinition GunshotReverbPreset = new ConfigDefinition(ConfigSection, "GunshotReverbPreset");
+            public static readonly ConfigDescription GunshotReverbPresetDesc = new ConfigDescription("Changes the reverb preset on gunfire");
+
+            public static readonly ConfigDefinition OtherReverbPreset = new ConfigDefinition(ConfigSection, "OtherReverbPreset");
+            public static readonly ConfigDescription OtherReverbPresetDesc = new ConfigDescription("Changes the reverb preset on everything that isn't gunfire");
+            
+        }
 
         public static void LoadConfig(ConfigFile cfg)
         {
+            if (_config != null) return;
             _config = cfg;
             CreateConfigBindings(cfg);
-
-            DisableAreaReverb = (bool)_config[areaReverb].BoxedValue;
-            DisableGunshotReverb = (bool)_config[gunshotReverb].BoxedValue;
-            DisableOtherReverb = (bool)_config[otherReverb].BoxedValue;
         }
 
-        public static void CreateConfigBindings(ConfigFile cfg)
+        private static void CreateConfigBindings(ConfigFile cfg)
         {
-            cfg.Bind(areaReverb, true, new ConfigDescription("Disables the AreaReverb script from running, stopping reverb in areas that it was explicitly added in"));
-            cfg.Bind(gunshotReverb, true, new ConfigDescription("Disables reverb on gunshots"));
-            cfg.Bind(otherReverb, true, new ConfigDescription("Disables reverb on everything that isn't a gunshot"));
+            EnableAreaReverbOverride = cfg.Bind(Definitions.EnableAreaReverbOverride, true, Definitions.EnableAreaReverbOverrideDesc);
+            DisableAreaReverb = cfg.Bind(Definitions.DisableAreaReverb, false, Definitions.DisableAreaReverbDesc);
+            EnableGunshotOverride = cfg.Bind(Definitions.EnableGunshotOverride, true, Definitions.EnableGunshotOverrideDesc);
+            EnableMiscOverride = cfg.Bind(Definitions.EnableMiscOverride, true, Definitions.EnableMiscOverrideDesc);
+
+            AreaReverbPreset = cfg.Bind(Definitions.AreaReverbPreset, AudioReverbPreset.Generic, Definitions.AreaReverbPresetDesc);
+            GunshotReverbPreset = cfg.Bind(Definitions.GunshotReverbPreset, AudioReverbPreset.Generic, Definitions.GunshotReverbPresetDesc);
+            OtherReverbPreset = cfg.Bind(Definitions.OtherReverbPreset, AudioReverbPreset.Generic, Definitions.OtherReverbPresetDesc);
         }
 
     }
 
-    [BepInPlugin("Zman2024-NoReverb", "No Reverb", "0.1.1")]
+    [BepInPlugin("Zman2024-NoReverb", "No Reverb", "0.1.2")]
     public class Plugin : BaseUnityPlugin
     {
         public void Start()
