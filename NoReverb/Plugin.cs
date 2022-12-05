@@ -18,11 +18,11 @@ namespace NoReverb
         public static ConfigEntry<bool> EnableAreaReverbOverride;
         public static ConfigEntry<bool> DisableAreaReverb;
         public static ConfigEntry<bool> EnableGunshotOverride;
-        public static ConfigEntry<bool> EnableMiscOverride;
+        public static ConfigEntry<bool> EnableGlobalOverride;
 
         public static ConfigEntry<AudioReverbPreset> AreaReverbPreset;
         public static ConfigEntry<AudioReverbPreset> GunshotReverbPreset;
-        public static ConfigEntry<AudioReverbPreset> OtherReverbPreset;
+        public static ConfigEntry<AudioReverbPreset> GlobalReverbPreset;
 
         // Config definitions //
         private static class Definitions
@@ -38,8 +38,8 @@ namespace NoReverb
             public static readonly ConfigDefinition EnableGunshotOverride = new ConfigDefinition(ConfigSection, "EnableGunshotOverride");
             public static readonly ConfigDescription EnableGunshotOverrideDesc = new ConfigDescription("Enables or disables the GunshotReverbPreset override");
 
-            public static readonly ConfigDefinition EnableMiscOverride = new ConfigDefinition(ConfigSection, "EnableMiscOverride");
-            public static readonly ConfigDescription EnableMiscOverrideDesc = new ConfigDescription("Enables or disables the OtherReverbPreset override");
+            public static readonly ConfigDefinition EnableGlobalOverride = new ConfigDefinition(ConfigSection, "EnableMiscOverride");
+            public static readonly ConfigDescription EnableGlobalOverrideDesc = new ConfigDescription("Enables or disables the OtherReverbPreset override");
 
 
             public static readonly ConfigDefinition AreaReverbPreset = new ConfigDefinition(ConfigSection, "AreaReverbPreset");
@@ -48,8 +48,8 @@ namespace NoReverb
             public static readonly ConfigDefinition GunshotReverbPreset = new ConfigDefinition(ConfigSection, "GunshotReverbPreset");
             public static readonly ConfigDescription GunshotReverbPresetDesc = new ConfigDescription("Changes the reverb preset on gunfire");
 
-            public static readonly ConfigDefinition OtherReverbPreset = new ConfigDefinition(ConfigSection, "OtherReverbPreset");
-            public static readonly ConfigDescription OtherReverbPresetDesc = new ConfigDescription("Changes the reverb preset on everything that isn't gunfire");
+            public static readonly ConfigDefinition GlobalReverbPreset = new ConfigDefinition(ConfigSection, "OtherReverbPreset");
+            public static readonly ConfigDescription GlobalReverbPresetDesc = new ConfigDescription("Changes the reverb preset on everything that isn't gunfire");
             
         }
 
@@ -62,14 +62,14 @@ namespace NoReverb
 
         private static void CreateConfigBindings(ConfigFile cfg)
         {
-            EnableAreaReverbOverride = cfg.Bind(Definitions.EnableAreaReverbOverride, true, Definitions.EnableAreaReverbOverrideDesc);
             DisableAreaReverb = cfg.Bind(Definitions.DisableAreaReverb, false, Definitions.DisableAreaReverbDesc);
+            EnableAreaReverbOverride = cfg.Bind(Definitions.EnableAreaReverbOverride, true, Definitions.EnableAreaReverbOverrideDesc);
             EnableGunshotOverride = cfg.Bind(Definitions.EnableGunshotOverride, true, Definitions.EnableGunshotOverrideDesc);
-            EnableMiscOverride = cfg.Bind(Definitions.EnableMiscOverride, true, Definitions.EnableMiscOverrideDesc);
+            EnableGlobalOverride = cfg.Bind(Definitions.EnableGlobalOverride, true, Definitions.EnableGlobalOverrideDesc);
 
             AreaReverbPreset = cfg.Bind(Definitions.AreaReverbPreset, AudioReverbPreset.Generic, Definitions.AreaReverbPresetDesc);
             GunshotReverbPreset = cfg.Bind(Definitions.GunshotReverbPreset, AudioReverbPreset.Generic, Definitions.GunshotReverbPresetDesc);
-            OtherReverbPreset = cfg.Bind(Definitions.OtherReverbPreset, AudioReverbPreset.Generic, Definitions.OtherReverbPresetDesc);
+            GlobalReverbPreset = cfg.Bind(Definitions.GlobalReverbPreset, AudioReverbPreset.Generic, Definitions.GlobalReverbPresetDesc);
         }
 
     }

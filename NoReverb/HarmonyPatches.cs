@@ -38,10 +38,10 @@ namespace NoReverb
         public static void GetMixerFromPreset(object[] __args)
         {
             AudioReverbPreset preset = ((AudioReverbPreset)__args[0]);
-            if (Configuration.EnableMiscOverride.Value)
+            if (Configuration.EnableGlobalOverride.Value)
             {
-                Logger.LogDebug($"Forcing environment reverb to {Configuration.OtherReverbPreset.Value} instead of {preset}");
-                __args[0] = Configuration.OtherReverbPreset.Value;
+                Logger.LogDebug($"Forcing global reverb to {Configuration.GlobalReverbPreset.Value} instead of {preset}");
+                __args[0] = Configuration.GlobalReverbPreset.Value;
             }
         }
 
